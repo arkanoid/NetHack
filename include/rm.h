@@ -77,6 +77,7 @@ enum levl_typ_types {
     INVALID_TYPE = 127
 };
 
+
 /*
  * Avoid using the level types in inequalities:
  * these types are subject to change.

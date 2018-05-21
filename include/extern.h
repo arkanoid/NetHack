@@ -1595,6 +1595,9 @@ E boolean FDECL(munslime, (struct monst *, BOOLEAN_P));
 
 E void FDECL(awaken_soldiers, (struct monst *));
 E int FDECL(do_play_instrument, (struct obj *));
+#ifdef BARD
+E int FDECL(pet_can_sing, (struct monst *,BOOLEAN_P));
+#endif
 
 /* ### nhlan.c ### */
 #ifdef LAN_FEATURES

@@ -83,6 +83,16 @@ enum roomtype_types {
 #define MAXRTYPE (CANDLESHOP) /* maximum valid room type */
 #define UNIQUESHOP (CANDLESHOP) /* shops here & above not randomly gen'd. */
 
+#ifdef BARD
+#define MUSICSHOP	24
+#undef UNIQUESHOP
+#undef CANDLESHOP
+#undef MAXRTYPE
+#define UNIQUESHOP	25
+#define CANDLESHOP	25
+#define MAXRTYPE	25
+#endif
+
 /* Special type for search_special() */
 #define ANY_TYPE (-1)
 #define ANY_SHOP (-2)

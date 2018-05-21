@@ -47,6 +47,20 @@ static struct trobj Barbarian[] = {
     { FOOD_RATION, 0, FOOD_CLASS, 1, 0 },
     { 0, 0, 0, 0, 0 }
 };
+#ifdef BARD
+static struct trobj Bard[] = {
+#define BARD_INSTR 0
+#define BARD_BOOZE 4
+#define BARD_WHISTLE 5
+	{ WOODEN_HARP, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS },
+	{ LEATHER_CLOAK, 1, ARMOR_CLASS, 1, UNDEF_BLESS },
+	{ APPLE, 0, FOOD_CLASS, 3, 0 },
+	{ ORANGE, 0, FOOD_CLASS, 3, 0 },
+	{ POT_BOOZE, 0, POTION_CLASS, 1, UNDEF_BLESS },
+	{ TIN_WHISTLE, 0, TOOL_CLASS, 1, UNDEF_BLESS },
+	{ 0, 0, 0, 0, 0 }
+};
+#endif
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
     { CLUB, 1, WEAPON_CLASS, 1, UNDEF_BLESS },
@@ -364,6 +378,9 @@ static const struct def_skill Skill_Mon[] = {
     { P_ESCAPE_SPELL, P_SKILLED },
     { P_MATTER_SPELL, P_BASIC },
     { P_MARTIAL_ARTS, P_GRAND_MASTER },
+#ifdef BARD
+    { P_MUSICALIZE, P_BASIC },
+#endif
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_P[] = {
@@ -388,6 +405,9 @@ static const struct def_skill Skill_P[] = {
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_CLERIC_SPELL, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_BASIC },
+#ifdef BARD
+    { P_MUSICALIZE, P_BASIC },
+#endif
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_R[] = {
@@ -574,6 +594,52 @@ register char sym;
         if (objects[ct].oc_class == sym && !objects[ct].oc_magic)
             knows_object(ct);
 }
+
+#ifdef BARD
+/* Know 5 to 15 random magical objects (wands, potions, scrolls, ...)
+   For now we decide that tools while possibly magical (bag of holding/tricks,
+   magic lamp) are excempt because the Bard already knows all instruments
+   which appear to be more than enough tools.
+   We might also add GEM_CLASS with oc_material != GLASS 
+*** Contributed by Johanna Ploog */
+STATIC_OVL void
+know_random_obj()
+{
+        register int obj, count, ct;
+
+        count = rn1(11,5);
+        for (ct = 500; ct > 0 && count > 0; ct--) {
+           obj = rn2(NUM_OBJECTS);
+           if (objects[obj].oc_magic &&
+
+               /* We have to make an exception for those dummy
+                  objects (wand and scroll) that exist to allow
+                  for additional descriptions. */
+
+               obj_descr[(objects[obj].oc_name_idx)].oc_name != 0 &&
+
+              (objects[obj].oc_class == ARMOR_CLASS &&
+
+               /* Dragon scales and mails are considered magical,
+                  but as they don't have different descriptions,
+                  they don't appear in the discovery list,
+                  so as not to rob the player of an opportunity... */
+
+                !(obj > HELM_OF_TELEPATHY && obj < PLATE_MAIL) ||
+
+               objects[obj].oc_class == RING_CLASS ||
+               objects[obj].oc_class == POTION_CLASS ||
+               objects[obj].oc_class == SCROLL_CLASS ||
+               objects[obj].oc_class == SPBOOK_CLASS ||
+               objects[obj].oc_class == WAND_CLASS ||
+               objects[obj].oc_class == AMULET_CLASS))
+            {
+              knows_object(obj);
+              count--;
+            }
+        }
+}
+#endif
 
 void
 u_init()

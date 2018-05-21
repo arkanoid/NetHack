@@ -545,6 +545,7 @@ typedef unsigned char uchar;
 
 #endif
 
+#define BARD		/* Bards and songs - Andre Bertelli */
 
 /* End of Section 4 */
 

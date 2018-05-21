@@ -8,6 +8,9 @@
 
 #include "hack.h"
 #include "dlb.h"
+#ifdef BARD
+#include "edog.h"
+#endif
 
 STATIC_DCL boolean FDECL(is_swallow_sym, (int));
 STATIC_DCL int FDECL(append_str, (char *, const char *));

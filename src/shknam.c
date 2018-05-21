@@ -187,6 +187,17 @@ static const char *const shkhealthfoods[] = {
     "=Zennia",  "=Zoe",      "=Zora",    0
 };
 
+#ifdef BARD
+static const char * const shkmusic[] = {
+    /* Brazil */
+    "Andre", "Daniel", "Tiago", "Alexandre", "Joao", 
+    "Carlos", "Fabio", "Ricardo", "Gustavo", "Rafael",
+    "Felipe", "Anderson", "Jorge", "Paulo", "Jose",
+    "Rogerio", "Roberto", "Marcos", "Luis", "Luciano",
+    0
+};
+#endif
+
 /*
  * To add new shop types, all that is necessary is to edit the shtypes[]
  * array.  See mkroom.h for the structure definition.  Typically, you'll
