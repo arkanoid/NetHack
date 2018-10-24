@@ -52,6 +52,7 @@ STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
  *   spelbase, spelheal:
  *      Arc are aware of magic through historical research
  *      Bar abhor magic (Conan finds it "interferes with his animal instincts")
+ *      Brd know a lot about general lore, including a bit of magic
  *      Cav are ignorant to magic
  *      Hea are very aware of healing magic through medical research
  *      Kni are moderately aware of healing from Paladin training
@@ -72,6 +73,7 @@ STATIC_DCL boolean FDECL(spell_aim_step, (genericptr_t, int, int));
  *  spelspec, spelsbon:
  *      Arc map masters (SPE_MAGIC_MAPPING)
  *      Bar fugue/berserker (SPE_HASTE_SELF)
+ *      Brd to put to sleep (SPE_SLEEP)
  *      Cav born to dig (SPE_DIG)
  *      Hea to heal (SPE_CURE_SICKNESS)
  *      Kni to turn back evil (SPE_TURN_UNDEAD)

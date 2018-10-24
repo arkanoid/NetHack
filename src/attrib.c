@@ -33,6 +33,10 @@ static const struct innate {
                  { 15, &(HStealth), "stealthy", "" },
                  { 0, 0, 0, 0 } },
 
+  brd_abil[] = { { 5, &(HSleep_resistance), "awake", "tired" },
+                 { 10, &(HStealth), "stealthy", "noisy" },
+                 { 0, 0, 0, 0 } },
+
   cav_abil[] = { { 7, &(HFast), "quick", "slow" },
                  { 15, &(HWarning), "sensitive", "" },
                  { 0, 0, 0, 0 } },
@@ -686,6 +690,7 @@ int r;
     } roleabils[] = {
         { PM_ARCHEOLOGIST, arc_abil },
         { PM_BARBARIAN, bar_abil },
+        { PM_BARD, brd_abil },
         { PM_CAVEMAN, cav_abil },
         { PM_HEALER, hea_abil },
         { PM_KNIGHT, kni_abil },

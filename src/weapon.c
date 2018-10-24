@@ -26,6 +26,7 @@
 #define PN_CLERIC_SPELL (-12)
 #define PN_ESCAPE_SPELL (-13)
 #define PN_MATTER_SPELL (-14)
+#define PN_MUSIC (-15)
 
 STATIC_DCL void FDECL(give_may_advance_msg, (int));
 
@@ -36,7 +37,7 @@ STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
     CROSSBOW, DART, SHURIKEN, BOOMERANG, PN_WHIP, UNICORN_HORN,
     PN_ATTACK_SPELL, PN_HEALING_SPELL, PN_DIVINATION_SPELL,
     PN_ENCHANTMENT_SPELL, PN_CLERIC_SPELL, PN_ESCAPE_SPELL, PN_MATTER_SPELL,
-    PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING
+    PN_MUSIC, PN_BARE_HANDED, PN_TWO_WEAPONS, PN_RIDING
 };
 
 /* note: entry [0] isn't used */
@@ -45,6 +46,7 @@ STATIC_VAR NEARDATA const char *const odd_skill_names[] = {
     "two weapon combat", "riding", "polearms", "saber", "hammer", "whip",
     "attack spells", "healing spells", "divination spells",
     "enchantment spells", "clerical spells", "escape spells", "matter spells",
+    "magic songs"
 };
 /* indexed vis `is_martial() */
 STATIC_VAR NEARDATA const char *const barehands_or_martial[] = {
@@ -1469,6 +1471,9 @@ const struct def_skill *class_skill;
     } else if (Role_if(PM_WIZARD)) {
         P_SKILL(P_ATTACK_SPELL) = P_BASIC;
         P_SKILL(P_ENCHANTMENT_SPELL) = P_BASIC;
+    } else if (Role_if(PM_BARD)) {
+        P_SKILL(P_MUSIC) = P_BASIC;
+        P_SKILL(P_BARE_HANDED_COMBAT) = P_BASIC;
     }
 
     /* walk through array to set skill maximums */

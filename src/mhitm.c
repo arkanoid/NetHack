@@ -807,6 +807,14 @@ register struct attack *mattk;
                      res = MM_MISS;
     boolean cancelled;
 
+#ifdef BARD
+    if (magr->mtame && EDOG(magr)) {
+      tmp += EDOG(magr)->encouraged;
+      if (wizard && EDOG(magr)->encouraged)
+        pline("[%s +%d]", Monnam(magr), EDOG(magr)->encouraged);
+    }
+#endif
+
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
         && !resists_ston(magr)) {

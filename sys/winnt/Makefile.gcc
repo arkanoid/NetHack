@@ -524,6 +524,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	$(subst /,\,$(U)levcomp $(DAT)/yendor.des)
 	$(subst /,\,$(U)levcomp $(DAT)/arch.des)
 	$(subst /,\,$(U)levcomp $(DAT)/barb.des)
+	$(subst /,\,$(U)levcomp $(DAT)/bard.des)
 	$(subst /,\,$(U)levcomp $(DAT)/caveman.des)
 	$(subst /,\,$(U)levcomp $(DAT)/healer.des)
 	$(subst /,\,$(U)levcomp $(DAT)/knight.des)

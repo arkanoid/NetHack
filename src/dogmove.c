@@ -914,6 +914,20 @@ int after; /* this is extra fast monster movement */
     if (appr == -2)
         return 0;
 
+    if (pet_can_sing(mtmp, FALSE))
+        return(3);
+    /* lose tameness if under effects of taming song */
+    if (has_edog && EDOG(mtmp)->friend && mtmp->mtame) {
+        mtmp->mtame -= (always_hostile(mtmp->data) ? 2 : 1);
+        if (mtmp->mtame <= 0) {
+            mtmp->mtame = 0;
+            EDOG(mtmp)->friend = 0;
+            mtmp->mpeaceful = EDOG(mtmp)->waspeaceful;
+        }
+      	if (wizard)
+            pline("[%s friend for %d(%d)]", Monnam(mtmp), mtmp->mtame, EDOG(mtmp)->waspeaceful);
+    }
+
     allowflags = ALLOW_M | ALLOW_TRAPS | ALLOW_SSM | ALLOW_SANCT;
     if (passes_walls(mtmp->data))
         allowflags |= (ALLOW_ROCK | ALLOW_WALL);
@@ -993,12 +1007,13 @@ int after; /* this is extra fast monster movement */
             register struct monst *mtmp2 = m_at(nx, ny);
 
             if ((int) mtmp2->m_lev >= (int) mtmp->m_lev + 2
+                + EDOG(mtmp)->encouraged
                 || (mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10)
                     && mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
                     && (perceives(mtmp->data) || !mtmp2->minvis))
                 || (mtmp2->data == &mons[PM_GELATINOUS_CUBE] && rn2(10))
                 || (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
-                || ((mtmp->mhp * 4 < mtmp->mhpmax
+                || ((mtmp->mhp * (4 + EDOG(mtmp)->encouraged) < mtmp->mhpmax
                      || mtmp2->data->msound == MS_GUARDIAN
                      || mtmp2->data->msound == MS_LEADER) && mtmp2->mpeaceful
                     && !Conflict)
@@ -1250,6 +1265,11 @@ newdogpos:
         place_monster(mtmp, cc.x, cc.y);
         newsym(cc.x, cc.y);
         set_apparxy(mtmp);
+    }
+ 	if (EDOG(mtmp)->encouraged && (rn2(4))) {
+        EDOG(mtmp)->encouraged--;
+        if (!(EDOG(mtmp)->encouraged) && canseemon(mtmp))
+            pline("%s looks calm again.", Monnam(mtmp));
     }
     return 1;
 }

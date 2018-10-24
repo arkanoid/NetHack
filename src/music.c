@@ -6,7 +6,11 @@
  * This file contains the different functions designed to manipulate the
  * musical instruments and their various effects.
  *
- * The list of instruments / effects is :
+ * There is a new skill called 'magic songs', which is the ability of 'casting'
+ * spells as music, with different effects. Classes that doesn't have this
+ * skill can still use musical instruments, with their normal effects.
+ *
+ * The list of instruments and their normal effects is :
  *
  * (wooden) flute       may calm snakes if player has enough dexterity
  * magic flute          may put monsters to sleep:  area of effect depends
@@ -27,6 +31,8 @@
  */
 
 #include "hack.h"
+#include "skills.h"
+#include "edog.h"
 
 STATIC_DCL void FDECL(awaken_monsters, (int));
 STATIC_DCL void FDECL(put_monsters_to_sleep, (int));
@@ -35,6 +41,14 @@ STATIC_DCL void FDECL(calm_nymphs, (int));
 STATIC_DCL void FDECL(charm_monsters, (int));
 STATIC_DCL void FDECL(do_earthquake, (int));
 STATIC_DCL int FDECL(do_improvisation, (struct obj *));
+STATIC_DCL void FDECL(tame_song,(int));
+STATIC_DCL void FDECL(sleep_song,(int));
+STATIC_DCL void FDECL(scary_song,(int));
+STATIC_DCL void FDECL(confusion_song,(int));
+STATIC_DCL unsigned char FDECL(songs_menu,(struct obj *));
+STATIC_PTR int NDECL(play_song);
+STATIC_DCL void FDECL(slowness_song,(int));
+STATIC_DCL void FDECL(encourage_pets,(int));
 
 #ifdef UNIX386MUSIC
 STATIC_DCL int NDECL(atconsole);
@@ -1655,3 +1669,147 @@ char *argv[];
 #endif /* VPIX_MUSIC */
 
 /*music.c*/
+
+
+
+
+
+@@ -1221,23 +1987,111 @@
+ do_play_instrument(instr)
+ struct obj *instr;
+ {
+-    char buf[BUFSZ], c = 'y';
++    char buf[BUFSZ];
+     char *s;
+     int x,y;
++    int a;
++    unsigned char song = SNG_NONE;
+     boolean ok;
+ 
+     if (Underwater) {
+ 	You_cant("play music underwater!");
+ 	return(0);
+     }
++#ifdef BARD
++    if (nohands(youmonst.data)) {
++	You("have no hands!");
++	return 0;
++    }
++    /*
++    if (uarms) {
++	You_cant("play music while wearing a shield!");
++      	return(0);
++    }
++    */
++    if (welded(uwep)) {
++	You("need free hands to play music!");
++	return(0);
++    }
++    /* also cursed gauntlets should mean your song will go bad */
++
++    /* Another possibility would be playing only scary music
++       while being thus affected. */
++    if (Confusion > 0 || Stunned || Hallucination) {
++	You_cant("play music while %s!", Confusion > 0 ? "confused" : 
++		 (Stunned ? "stunned" : "stoned"));
++	return 0;
++    }
++
++    if (uarms && (instr->otyp == WOODEN_HARP || instr->otyp == LEATHER_DRUM))
++	    You("can't play properly while wearing a shield.");
++    if (is_silent(youmonst.data))
++	    pline("While in this form, you can't sing along your songs.");
++    
++    if (!P_RESTRICTED(P_MUSICALIZE)) {
++	song = songs_menu(instr);
++	if (song == SNG_NONE)
++	    return 0;
++    } else {
++#endif
+     if (instr->otyp != LEATHER_DRUM && instr->otyp != DRUM_OF_EARTHQUAKE) {
+-	c = yn("Improvise?");
++	    if (yn("Improvise?") == 'y') song = SNG_IMPROVISE;
++	    else if (u.uevent.uheard_tune == 2 && yn("Play the passtune?") == 'y')
++		song = SNG_PASSTUNE;
++	    else
++		song = SNG_NONE;
++    }
++#ifdef BARD
+     }
+-    if (c == 'n') {
+-	if (u.uevent.uheard_tune == 2 && yn("Play the passtune?") == 'y') {
++#endif
++    
++    switch (song) {
++    case SNG_NONE:
++	return 0;
++	break;
++    case SNG_IMPROVISE:
++	return do_improvisation(instr);
++	break;
++    case SNG_NOTES:
++	getlin("What tune are you playing? [what 5 notes]", buf);
++	break;
++    case SNG_PASSTUNE:
+ 	    Strcpy(buf, tune);
+-	} else {
+-	    getlin("What tune are you playing? [5 notes, A-G]", buf);
++	break;
++    default:
++#ifdef BARD
++/*
++	a = songs[song].level * (Role_if(PM_BARD) ? 2 : 5);
++	if (a > u.uen) {
++	    You("don't have enough energy to play that song.");
++	    return 0;
++	}
++	u.uen -= a;
++	flags.botl = 1;
++*/
++	    if (rnd(100) > song_success(song, instr, 1)) {
++		    pline("What you produce is quite far from music...");
++		    return 1;
++	    }
++	
++	    song_played = song;
++	    song_instr = instr;
++	    song_delay = songs[song_played].turns;
++
++	song_penalty = (songs[song_played].instr1 == instr->otyp);
++	if (song_played == SNG_TAME && instr->oartifact == ART_LYRE_OF_ORPHEUS)
++		song_penalty = 0;
++
++	Sprintf(msgbuf, "playing %s", the(xname(instr)));
++	if (instr->oartifact == ART_LYRE_OF_ORPHEUS)
++		pline("%s the \"%s\" song!", Tobjnam(instr, "sing"), songs[song].name);
++	else
++		You("play the \"%s\" song...", songs[song].name);
++	set_occupation(play_song, msgbuf, 0);
++	return 0;
++#endif	/* BARD */
++    }
++    
+ 	    (void)mungspaces(buf);
+ 	    /* convert to uppercase and change any "H" to the expected "B" */
+ 	    for (s = buf; *s; s++) {
+@@ -1249,7 +2103,7 @@
+ #endif
+ 		if (*s == 'H') *s = 'B';
+ 	    }
+-	}
++    
+ 	You("extract a strange sound from %s!", the(xname(instr)));
+ #ifdef UNIX386MUSIC
+ 	/* if user is at the console, play through the console speaker */
+@@ -1350,10 +2204,9 @@
+ 	    }
+ 	  }
+ 	return 1;
+-    } else
+-	    return do_improvisation(instr);
+ }
+ 
++
+ #ifdef UNIX386MUSIC
+ /*
+  * Play audible music on the machine's speaker if appropriate.

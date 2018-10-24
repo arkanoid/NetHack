@@ -216,7 +216,11 @@ static const char * const shkmusic[] = {
 const struct shclass shtypes[] = {
     { "general store",
       RANDOM_CLASS,
+#ifdef BARD
+      39,
+#else
       42,
+#endif
       D_SHOP,
       { { 100, RANDOM_CLASS },
         { 0, 0 },
@@ -333,6 +337,18 @@ const struct shclass shtypes[] = {
         { 2, -SCR_FOOD_DETECTION },
         { 1, -LUMP_OF_ROYAL_JELLY } },
       shkhealthfoods },
+#ifdef BARD
+    { "music shop",
+      TOOL_CLASS,
+      3,
+      D_SHOP,
+      { { 32, -WOODEN_FLUTE },
+        { 32, -WOODEN_HARP },
+        { 32, -LEATHER_DRUM },
+        { 2, -MAGIC_HARP },
+        { 2, -MAGIC_FLUTE } },
+      shkmusic },
+#endif
     /* Shops below this point are "unique".  That is they must all have a
      * probability of zero.  They are only created via the special level
      * loader.

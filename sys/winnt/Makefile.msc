@@ -623,6 +623,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)levcomp yendor.des
 	$(U)levcomp arch.des
 	$(U)levcomp barb.des
+	$(U)levcomp bard.des
 	$(U)levcomp caveman.des
 	$(U)levcomp healer.des
 	$(U)levcomp knight.des

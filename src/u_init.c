@@ -292,6 +292,27 @@ static const struct def_skill Skill_B[] = {
     { P_BARE_HANDED_COMBAT, P_MASTER },
     { P_NONE, 0 }
 };
+static struct def_skill Skill_Bard[] = {
+    { P_DAGGER, P_SKILLED },
+    { P_KNIFE,  P_BASIC },
+    { P_SHORT_SWORD, P_BASIC },
+    { P_SCIMITAR, P_BASIC },
+    { P_CLUB, P_SKILLED },
+    { P_FLAIL, P_BASIC },
+    { P_QUARTERSTAFF, P_SKILLED },
+    { P_POLEARMS, P_BASIC },
+    { P_JAVELIN, P_SKILLED },
+    { P_SPEAR, P_BASIC },
+    { P_SLING, P_SKILLED },
+    { P_DART, P_EXPERT },
+    { P_UNICORN_HORN, P_BASIC },
+	{ P_CROSSBOW, P_SKILLED },
+    { P_ENCHANTMENT_SPELL, P_SKILLED },
+	{ P_ESCAPE_SPELL, P_BASIC },
+    { P_BARE_HANDED_COMBAT, P_EXPERT },
+    { P_MUSIC, P_EXPERT },
+    { P_NONE, 0 }
+  };
 static const struct def_skill Skill_C[] = {
     { P_DAGGER, P_BASIC },
     { P_KNIFE, P_SKILLED },
@@ -379,7 +400,7 @@ static const struct def_skill Skill_Mon[] = {
     { P_MATTER_SPELL, P_BASIC },
     { P_MARTIAL_ARTS, P_GRAND_MASTER },
 #ifdef BARD
-    { P_MUSICALIZE, P_BASIC },
+    { P_MUSIC, P_BASIC },
 #endif
     { P_NONE, 0 }
 };
@@ -405,9 +426,7 @@ static const struct def_skill Skill_P[] = {
     { P_DIVINATION_SPELL, P_EXPERT },
     { P_CLERIC_SPELL, P_EXPERT },
     { P_BARE_HANDED_COMBAT, P_BASIC },
-#ifdef BARD
-    { P_MUSICALIZE, P_BASIC },
-#endif
+    { P_MUSIC, P_BASIC },
     { P_NONE, 0 }
 };
 static const struct def_skill Skill_R[] = {
@@ -520,6 +539,7 @@ static const struct def_skill Skill_T[] = {
     { P_ENCHANTMENT_SPELL, P_BASIC },
     { P_ESCAPE_SPELL, P_SKILLED },
     { P_RIDING, P_BASIC },
+    { P_MUSIC, P_BASIC },
     { P_TWO_WEAPON_COMBAT, P_SKILLED },
     { P_BARE_HANDED_COMBAT, P_SKILLED },
     { P_NONE, 0 }
@@ -750,6 +770,25 @@ u_init()
         knows_class(WEAPON_CLASS);
         knows_class(ARMOR_CLASS);
         skill_init(Skill_B);
+        break;
+	case PM_BARD:
+        if (rn2(100) >= 50) Bard[BARD_INSTR].trotyp = WOODEN_FLUTE;
+        if (rn2(100) >= 85) Bard[BARD_WHISTLE].trotyp = BELL;
+        Bard[BARD_BOOZE].trquan = rn1(2, 5);
+        ini_inv(Bard);
+        /* This depends on the order in objects.c */
+        for (i = TIN_WHISTLE; i <= DRUM_OF_EARTHQUAKE; i++)
+            knows_object(i);
+        /* Bards know about the enchantment spellbooks, though they don't know
+		   the spells */
+        knows_object(SPE_SLEEP);
+        knows_object(SPE_CONFUSE_MONSTER);
+        knows_object(SPE_SLOW_MONSTER);
+        knows_object(SPE_CAUSE_FEAR);
+        knows_object(SPE_CHARM_MONSTER);
+        /* Bards also know a lot about legendary & magical stuff. */
+        know_random_obj();
+        skill_init(Skill_Bard);
         break;
     case PM_CAVEMAN:
         Cave_man[C_AMMO].trquan = rn1(11, 10); /* 10..20 */
@@ -983,6 +1022,9 @@ int otyp;
         break;
     case PM_BARBARIAN:
         skills = Skill_B;
+        break;
+    case PM_BARD:
+        skills = Skill_Bard;
         break;
     case PM_CAVEMAN:
         skills = Skill_C;

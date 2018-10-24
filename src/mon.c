@@ -196,6 +196,11 @@ int mndx, mode;
     case PM_CHIEFTAIN:
         mndx = mode ? PM_BARBARIAN : PM_HUMAN;
         break;
+#ifdef BARD
+    case PM_RHYMER:
+        mndx = mode ? PM_BARD : PM_HUMAN;
+        break;
+#endif
     case PM_NEANDERTHAL:
         mndx = mode ? PM_CAVEMAN : PM_HUMAN;
         break;

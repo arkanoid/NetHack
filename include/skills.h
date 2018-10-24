@@ -58,6 +58,7 @@ enum p_skills {
     P_CLERIC_SPELL,
     P_ESCAPE_SPELL,
     P_MATTER_SPELL,
+    P_MUSIC, /* 'cast' spells as songs */
 
     /* Other types of combat */
     P_BARE_HANDED_COMBAT, /* actually weaponless; gloves are ok */
@@ -73,7 +74,7 @@ enum p_skills {
 #define P_LAST_WEAPON P_UNICORN_HORN
 
 #define P_FIRST_SPELL P_ATTACK_SPELL
-#define P_LAST_SPELL P_MATTER_SPELL
+#define P_LAST_SPELL P_MUSIC
 
 #define P_LAST_H_TO_H P_RIDING
 #define P_FIRST_H_TO_H P_BARE_HANDED_COMBAT

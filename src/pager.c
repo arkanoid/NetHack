@@ -257,7 +257,9 @@ int x, y;
                 ? ((mtmp->isshk && accurate) ? "tail of " : "tail of a ")
                 : "",
             (mtmp->mtame && accurate)
-                ? "tame "
+            ? (EDOG(mtmp)->friend
+               ? "friendly "
+               : "tame ")
                 : (mtmp->mpeaceful && accurate)
                     ? "peaceful "
                     : "",

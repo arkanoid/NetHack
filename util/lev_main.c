@@ -203,6 +203,9 @@ static struct {
     { "wand shop", WANDSHOP },
     { "tool shop", TOOLSHOP },
     { "book shop", BOOKSHOP },
+    #ifdef BARD
+    	{ "music shop",  MUSICSHOP },
+    #endif
     { "health food shop", FODDERSHOP },
     { "candle shop", CANDLESHOP },
     { 0, 0 }
@@ -244,6 +247,9 @@ char **argv;
     static char *mac_argv[] = {
         "lev_comp", /* dummy argv[0] */
         ":dat:Arch.des",    ":dat:Barb.des",     ":dat:Caveman.des",
+        #ifdef BARD
+        				":dat:Bard.des",
+        #endif
         ":dat:Healer.des",  ":dat:Knight.des",   ":dat:Monk.des",
         ":dat:Priest.des",  ":dat:Ranger.des",   ":dat:Rogue.des",
         ":dat:Samurai.des", ":dat:Tourist.des",  ":dat:Valkyrie.des",
