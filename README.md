@@ -1,5 +1,7 @@
 # Nethack Bard and Music patch
 
+**Note: this is currently a work in progress, code won't compile for now.**
+
 ## Concept
 
 Musical instruments (the normal, non-magic ones) in Nethack have some minor effects. For example: playing a wooden flute have a chance to pacifying snakes based on dexterity and experience.
